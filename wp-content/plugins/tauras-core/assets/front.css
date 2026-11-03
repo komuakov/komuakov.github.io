@@ -1,0 +1,169 @@
+/* Таурас: формы, отзывы, всплывающие окна. Цвета — через переменные, тема может переопределить. */
+:root {
+	--tf-accent: #ab2329;
+	--tf-btn: #8e44ec;
+	--tf-text: #1d1d1f;
+	--tf-muted: #6b6b70;
+	--tf-line: #d9d9de;
+	--tf-bg: #fff;
+	--tf-err: #c62828;
+	--tf-ok: #2e7d32;
+}
+
+/* ---------- Формы ---------- */
+.tauras-form { display: grid; gap: 12px; max-width: 520px; }
+.tauras-form__title { font-size: 1.25em; font-weight: 700; }
+.tauras-form__field { display: grid; gap: 4px; }
+.tauras-form__label { font-size: .9em; color: var(--tf-muted); }
+.tauras-form .req { color: var(--tf-accent); margin-left: 2px; }
+.tauras-form input:not([type=checkbox]):not([type=radio]),
+.tauras-form textarea,
+.tauras-form select {
+	width: 100%; box-sizing: border-box; padding: 12px 14px; font: inherit; font-size: 16px; /* 16px — без автозума на iPhone */
+	border: 1px solid var(--tf-line); border-radius: 8px; background: var(--tf-bg); color: var(--tf-text);
+}
+.tauras-form input:focus, .tauras-form textarea:focus, .tauras-form select:focus { outline: 2px solid var(--tf-btn); outline-offset: 0; border-color: transparent; }
+.tauras-form .is-error input, .tauras-form .is-error textarea, .tauras-form .is-error select { border-color: var(--tf-err); }
+.tauras-form__check { display: flex; gap: 8px; align-items: flex-start; font-size: .9em; }
+.tauras-form__check.is-error { color: var(--tf-err); }
+.tauras-form__btn {
+	padding: 14px 20px; border: 0; border-radius: 8px; background: var(--tf-btn); color: #fff; font: inherit; font-weight: 700;
+	cursor: pointer; transition: filter .15s;
+}
+.tauras-form__btn:hover { filter: brightness(1.08); }
+.tauras-form__btn.is-loading { opacity: .6; cursor: wait; }
+.tauras-form__consent { margin: 0; font-size: .8em; color: var(--tf-muted); }
+.tauras-form__msg:empty { display: none; }
+.tauras-form__msg.is-ok { color: var(--tf-ok); font-weight: 600; }
+.tauras-form__msg.is-error { color: var(--tf-err); }
+.tauras-form.is-sent .tauras-form__field, .tauras-form.is-sent .tauras-form__check, .tauras-form.is-sent .tauras-form__btn { display: none; }
+.tauras-hp { position: absolute !important; left: -9999px !important; width: 1px; height: 1px; opacity: 0; }
+
+/* ---------- Отзывы ---------- */
+.tauras-reviews { margin: 32px 0; }
+.tauras-review { padding: 16px 0; border-bottom: 1px solid var(--tf-line); }
+.tauras-review__head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.tauras-review__head time { color: var(--tf-muted); font-size: .85em; }
+.tauras-review__stars { color: #f5a623; letter-spacing: 1px; }
+.tauras-reviews__add { margin-top: 16px; }
+.tauras-reviews__add > summary { display: inline-block; list-style: none; cursor: pointer; }
+.tauras-reviews__add > summary::-webkit-details-marker { display: none; }
+.tauras-reviews__add[open] > summary { margin-bottom: 16px; }
+.tauras-rating { border: 0; padding: 0; margin: 0; display: inline-flex; flex-direction: row-reverse; justify-content: flex-end; }
+.tauras-rating legend { width: 100%; font-size: .9em; color: var(--tf-muted); margin-bottom: 4px; }
+.tauras-rating input { position: absolute; opacity: 0; }
+.tauras-rating label { font-size: 28px; color: var(--tf-line); cursor: pointer; padding: 0 2px; }
+.tauras-rating input:checked ~ label, .tauras-rating label:hover, .tauras-rating label:hover ~ label { color: #f5a623; }
+.tauras-rating input:focus-visible + label { outline: 2px solid var(--tf-btn); }
+
+/* ---------- Всплывающие окна ---------- */
+html.tp-open { overflow: hidden; }
+.tp-popup { position: fixed; inset: 0; z-index: 99990; display: flex; align-items: center; justify-content: center; padding: 16px; opacity: 0; transition: opacity .25s; }
+.tp-popup.is-visible { opacity: 1; }
+.tp-popup[hidden] { display: none; }
+.tp-popup__overlay { position: absolute; inset: 0; background: rgba(0, 0, 0, .55); cursor: pointer; } /* cursor — иначе iPhone не считает фон кликабельным */
+.tp-popup__box {
+	position: relative; display: flex; max-width: 820px; width: 100%; max-height: calc(100vh - 32px); overflow: auto;
+	background: var(--tf-bg); color: var(--tf-text); border-radius: 14px; box-shadow: 0 20px 60px rgba(0, 0, 0, .35);
+	transform: translateY(16px) scale(.98); transition: transform .25s;
+}
+.tp-popup.is-visible .tp-popup__box { transform: none; }
+.tp-popup__x {
+	position: absolute; top: 8px; right: 8px; z-index: 2; width: 36px; height: 36px; border: 0; border-radius: 50%;
+	background: rgba(255, 255, 255, .9); color: #333; font-size: 24px; line-height: 1; cursor: pointer;
+}
+.tp-popup__img { flex: 0 0 48%; display: block; }
+.tp-popup__img img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.tp-popup__body { flex: 1; display: flex; flex-direction: column; gap: 12px; padding: 28px 24px 24px; }
+.tp-popup__title { font-size: 1.35em; font-weight: 800; line-height: 1.2; padding-right: 28px; }
+.tp-popup__text { color: var(--tf-muted); }
+.tp-popup .tauras-form { max-width: none; }
+.tp-popup .tauras-form__btn, .tp-popup__btn { background: var(--tp-btn, var(--tf-btn)); }
+.tp-popup__btn {
+	display: block; text-align: center; padding: 14px 20px; border-radius: 8px; color: #fff; font-weight: 700; text-decoration: none;
+}
+.tp-popup__btn--ghost { background: transparent; color: var(--tp-btn, var(--tf-btn)); border: 2px solid currentColor; }
+.tp-popup__close { margin-top: auto; padding: 10px; border: 0; border-radius: 8px; background: #8a8a8f; color: #fff; font: inherit; cursor: pointer; }
+.tp-layout-image-top .tp-popup__box { flex-direction: column; max-width: 460px; }
+.tp-layout-image-only .tp-popup__box { max-width: 560px; }
+.tp-layout-image-only .tp-popup__img { flex-basis: 100%; }
+
+.tp-timer { text-align: center; }
+.tp-timer__label { font-size: .9em; font-weight: 600; margin-bottom: 6px; }
+.tp-timer__cells, .tp-timer__units { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.tp-timer__cells span { padding: 8px 0; border-radius: 8px; background: #1f2a44; color: #fff; font-size: 1.4em; font-weight: 800; font-variant-numeric: tabular-nums; }
+.tp-timer__units span { font-size: .75em; color: var(--tf-muted); }
+.tp-timer.no-days .tp-timer__cells, .tp-timer.no-days .tp-timer__units { grid-template-columns: repeat(3, 1fr); }
+.tp-timer.no-days [data-d], .tp-timer.no-days .tp-timer__units span:first-child { display: none; }
+
+/* Телефон: окно — панель снизу, которую удобно закрыть */
+@media (max-width: 720px) {
+	.tp-popup { align-items: flex-end; padding: 0; }
+	.tp-popup__box { flex-direction: column; max-height: 92vh; border-radius: 16px 16px 0 0; transform: translateY(100%); }
+	.tp-popup__img { flex-basis: auto; max-height: 38vh; overflow: hidden; }
+	.tp-layout-image-only .tp-popup__img { max-height: 80vh; }
+	.tp-popup__body { padding: 20px 16px calc(16px + env(safe-area-inset-bottom)); }
+}
+
+/* Окно «как Envybox» (размеры и цвета сняты со старого сайта, 24.10.2026):
+   ПК — 900×500, картинка 650×500 слева, колонка 250px; телефон — тёмная карточка 320px, картинка сверху. */
+.tp-layout-envybox .tp-popup__overlay { background: rgba(255, 255, 255, .7); }
+.tp-layout-envybox .tp-popup__box { width: 900px; max-width: calc(100vw - 32px); height: 500px; max-height: calc(100vh - 32px); overflow: visible; border-radius: 8px; background: #fff; color: #040527; box-shadow: 0 0 40px rgba(0, 0, 0, .35); }
+.tp-layout-envybox .tp-popup__x { top: -50px; right: -50px; }
+@media (max-width: 1020px) { .tp-layout-envybox .tp-popup__x { top: 8px; right: 8px; } }
+.tp-layout-envybox .tp-popup__img { flex: 0 0 72.2%; min-width: 0; }
+.tp-layout-envybox .tp-popup__img img { border-radius: 8px 0 0 8px; }
+.tp-layout-envybox .tp-popup__body { flex: 1 1 250px; min-width: 0; gap: 8px; padding: 10px 19px 12px; overflow: auto; }
+.tp-layout-envybox .tp-popup__title { padding: 0; font-size: 16px; font-weight: 900; line-height: 1.25; color: #040527; }
+.tp-layout-envybox .tp-popup__text { font-size: 16px; font-weight: 900; line-height: 1.25; color: #040527; }
+.tp-layout-envybox .tp-timer__label { margin-bottom: 5px; font-size: 14px; font-weight: 500; color: #24263f; }
+.tp-layout-envybox .tp-timer__cells, .tp-layout-envybox .tp-timer__units { gap: 12px; }
+.tp-layout-envybox .tp-timer__cells span { height: 48px; padding: 7px 0 0; border-radius: 0; background: #24263f; font-size: 27px; font-weight: 500; }
+.tp-layout-envybox .tp-timer__units span { font-size: 10px; color: #24263f; }
+.tp-layout-envybox .tauras-form { display: flex; flex-direction: column; gap: 12px; }
+.tp-layout-envybox .tauras-form__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.tp-layout-envybox .tauras-form input:not([type=checkbox]) { height: 33px; padding: 8px 10px; border: 1px solid #959595; border-radius: 4px; background: #fff; color: #291f1f; font-size: 14px; font-weight: 500; }
+.tp-layout-envybox .tauras-form__consent { order: 1; margin: 0; color: #575757; font-size: 9px; font-weight: 500; line-height: 1.3; }
+.tp-layout-envybox .tauras-form__consent a { color: #575757; text-decoration: underline; }
+.tp-layout-envybox .tauras-form__btn { order: 2; height: 41px; padding: 4px 0 8px; border-radius: 4px; font-size: 24px; font-weight: 700; line-height: 1.2; }
+.tp-layout-envybox .tauras-form__msg { order: 3; font-size: 13px; }
+.tp-layout-envybox .tp-popup__close { margin-top: 0; height: 30px; padding: 4px 0 8px; border-radius: 4px; background: #848484; font-size: 15px; font-weight: 700; line-height: 1.2; }
+@media (max-width: 720px) {
+	.tp-layout-envybox.tp-popup { align-items: center; padding: 16px; }
+	.tp-layout-envybox .tp-popup__box { flex-direction: column; width: 320px; height: auto; overflow: auto; border-radius: 4px; background: #222; color: #fff; transform: none; }
+	.tp-layout-envybox .tp-popup__x { top: 8px; right: 8px; }
+	.tp-layout-envybox .tp-popup__img { flex: none; max-height: none; }
+	.tp-layout-envybox .tp-popup__img img { height: auto; border-radius: 4px 4px 0 0; }
+	.tp-layout-envybox .tp-popup__body { flex: none; gap: 8px; padding: 4px 7px 10px; overflow: visible; }
+	.tp-layout-envybox .tp-popup__title, .tp-layout-envybox .tp-popup__text { color: #fff; font-size: 15px; font-weight: 400; }
+	.tp-layout-envybox .tp-timer { display: flex; align-items: center; justify-content: space-between; gap: 8px; text-align: left; }
+	.tp-layout-envybox .tp-timer__label { margin: 0; color: #fff; font-size: 14px; font-weight: 400; }
+	.tp-layout-envybox .tp-timer__cells { display: flex; gap: 10px; }
+	.tp-layout-envybox .tp-timer__cells span { position: relative; height: auto; min-width: 32px; padding: 2px 3px; border-radius: 2px; background: #fff; color: #000; font-size: 19px; font-weight: 700; text-align: center; }
+	.tp-layout-envybox .tp-timer__cells span + span::before { content: ':'; position: absolute; left: -8px; color: #fff; font-size: 18px; }
+	.tp-layout-envybox .tp-timer.no-days [data-h]::before { content: none; }
+	.tp-layout-envybox .tp-timer__units { display: none; }
+	.tp-layout-envybox .tauras-form__field:has([name="f[name]"]) { display: none; }
+	.tp-layout-envybox .tauras-form input:not([type=checkbox]) { height: 40px; color: #222; font-weight: 400; }
+	.tp-layout-envybox .tauras-form__btn { order: 1; background: var(--tp-btn-m, var(--tp-btn)); font-size: 21px; }
+	.tp-layout-envybox .tauras-form__consent { order: 2; color: #fff; font-size: 12px; font-weight: 400; text-align: center; }
+	.tp-layout-envybox .tauras-form__consent a { color: #fff; }
+	.tp-layout-envybox .tauras-form__msg { color: #fff; }
+	.tp-layout-envybox .tp-popup__close { display: none; }
+}
+
+/* Крестик: зона нажатия 44×44 (рекомендация Apple/Google), полупрозрачный круг — виден на светлой и тёмной картинке; цвета — в настройках окна */
+.tp-popup .tp-popup__x, .tp-layout-envybox .tp-popup__x {
+	width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0 0 3px; display: flex; align-items: center; justify-content: center;
+	border: 1.5px solid rgba(255, 255, 255, .35); border-radius: 50%;
+	background: rgba(0, 0, 0, .5); background: color-mix(in srgb, var(--tp-x-bg, #000) 55%, transparent);
+	color: var(--tp-x, #fff); font-size: 30px; font-weight: 400; line-height: 1; text-shadow: 0 1px 3px rgba(0, 0, 0, .6);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, .3); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
+	touch-action: manipulation; -webkit-tap-highlight-color: transparent; cursor: pointer;
+}
+.tp-popup .tp-popup__x:hover, .tp-layout-envybox .tp-popup__x:hover { background: color-mix(in srgb, var(--tp-x-bg, #000) 75%, transparent); color: var(--tp-x, #fff); }
+.tp-popup .tp-popup__x:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+	.tp-popup, .tp-popup__box { transition: none; }
+}

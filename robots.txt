@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /wp-content/plugins/
+Disallow: /thanks/
+Disallow: /category/
+
+Sitemap: https://taurasfitness.ru/sitemap.xml

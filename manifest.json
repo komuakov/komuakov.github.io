@@ -1,0 +1,29 @@
+{
+  "short_name": "Tauras-Fitness",
+  "name": "Фитнес-клуб «Tauras-Fitness»",
+  "lang": "ru-RU",
+  "description": "Самый крупный фитнес центр в Санкт-Петербурге с 4 бассейнами без хлорки.",
+  "icons": [
+    {
+      "src": "/custom/my/img/icon/android-icon-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/custom/my/img/icon/icons-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "custom/my/img/icon/maskable_icon.png",
+      "sizes": "196x196",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/?source=pwa",
+  "background_color": "#2b2b2b",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#ffffff"
+}
