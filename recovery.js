@@ -10,12 +10,13 @@
 		'<a class="tf-rec__btn tf-rec__btn--max" href="https://max.ru/u/f9LHodD0cOKWPyt2Y78mZ8BtKr5GJamdx3WI1PPy0oZzxma38LGVMUCVDvE" target="_blank" rel="noopener">MAX</a>' +
 		'</div></div>';
 	function run() {
-		document.querySelectorAll('form').forEach(function (f) {
-			if (f.closest('.tf-rec-done')) return;
-			if (f.classList.contains('tf-subscribe') || f.classList.contains('subscription') || f.getAttribute('role') === 'search' || f.querySelector('input[type="search"], input[name="s"]')) {
-				f.style.display = 'none';
-				return;
-			}
+		// фильтры каталога/команды и формы отзывов работают через сервер — во временной копии их прячем
+		document.querySelectorAll('.shop_search, form.tf-subscribe, form.subscription, form[action*="wp-comments-post"], form[method="get"]').forEach(function (el) {
+			(el.closest('.shop_search') || el).style.display = 'none';
+		});
+		// формы заявок -> телефон и мессенджеры
+		document.querySelectorAll('form.tauras-form').forEach(function (f) {
+			if (f.classList.contains('tf-rec-done') || f.style.display === 'none') return;
 			f.insertAdjacentHTML('beforebegin', html);
 			f.style.display = 'none';
 			f.classList.add('tf-rec-done');
