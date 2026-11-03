@@ -2163,3 +2163,57 @@ a.tf-ct__q--call { background: #497ecf; } a.tf-ct__q--call:hover { background: #
    посетителя и перестаёт замерять главный элемент (PageSpeed: NO_LCP). Прилипание включается после первого касания,
    колёсика или клавиши (класс html.tf-snap, theme.js); для посетителя всё работает как раньше. */
 html:not(.tf-snap) * { scroll-snap-type: none !important; }
+
+/* ===== Переключатели слайдеров (03.11.2026): под лентой слева «1 / 4» (текущий номер крупно), справа круглые стрелки,
+   под ними по центру точки (текущая — вытянутая). На синем и тёмном фоне акцент жёлтый, на светлом (.tf-nav--light) — синий.
+   Ленты акций/новостей (.tf-ps), ленты педагогов/отзывов (.tf-sc, theme.js), фотогалереи [tauras_gallery], главный слайдер ===== */
+.tf-nav { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 14px 16px; margin-top: 22px; }
+.tf-nav .tf-nav__count { min-width: 0; color: rgba(255,255,255,.8); font: 500 22px/1 Roboto, Arial, sans-serif; font-variant-numeric: tabular-nums; text-align: left; white-space: nowrap; opacity: 1; }
+.tf-nav .tf-nav__count b { margin-right: 4px; color: #f3c500; font-size: 36px; font-weight: 700; }
+.tf-nav__arrows { display: flex; gap: 12px; }
+.tf-nav .tf-nav__arrow, .tf-hs__nav .tf-nav__arrow { position: relative; display: block; width: 52px; height: 52px; padding: 0; border: 1px solid rgba(255,255,255,.35); border-radius: 50%; background: #fff; color: #1f2d4d; box-shadow: 0 6px 18px rgba(0,0,0,.18); cursor: pointer; transition: background-color .2s, color .2s, translate .2s, opacity .2s; }
+.tf-nav .tf-nav__arrow::before, .tf-hs__nav .tf-nav__arrow::before { content: ''; position: absolute; inset: 0; width: 22px; height: 22px; margin: auto; border: 0; background: currentColor; transform: none;
+	-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 12H5M11 6l-6 6 6 6'/%3E%3C/svg%3E") center / contain no-repeat;
+	mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 12H5M11 6l-6 6 6 6'/%3E%3C/svg%3E") center / contain no-repeat; }
+.tf-nav .tf-nav__arrow--next::before, .tf-hs__nav .tf-nav__arrow--next::before { transform: scaleX(-1); }
+.tf-nav .tf-nav__arrow:hover:not(:disabled), .tf-hs__nav .tf-nav__arrow:hover { background: #f3c500; border-color: #f3c500; color: #1f2d4d; translate: 0 -2px; }
+.tf-nav .tf-nav__arrow:disabled { opacity: .35; cursor: default; box-shadow: none; translate: none; }
+.tf-nav .tf-nav__dots { grid-column: 1 / -1; display: flex; justify-content: center; align-items: center; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.tf-nav .tf-nav__dots > button, .tf-nav .tf-nav__dots > li > a { display: block; width: 12px; height: 12px; padding: 0; border: 0; border-radius: 6px; background: rgba(255,255,255,.4); cursor: pointer; transition: width .25s, background-color .25s; }
+.tf-nav .tf-nav__dots > li { margin: 0; padding: 0; }
+.tf-nav .tf-nav__dots > button.is-on, .tf-nav .tf-nav__dots > li.uk-active > a { width: 36px; background: #f3c500; }
+/* светлый фон */
+.tf-nav--light .tf-nav__count { color: #6b7487; } .tf-nav--light .tf-nav__count b { color: #497ecf; }
+.tf-nav--light .tf-nav__arrow { border-color: #dfe5f0; box-shadow: 0 6px 18px rgba(31,45,77,.12); }
+.tf-nav.tf-nav--light .tf-nav__arrow:hover:not(:disabled) { background: #497ecf; border-color: #497ecf; color: #fff; }
+.tf-nav--light .tf-nav__dots > button, .tf-nav--light .tf-nav__dots > li > a { background: #c9d3e6; }
+.tf-nav--light .tf-nav__dots > button.is-on, .tf-nav--light .tf-nav__dots > li.uk-active > a { background: #497ecf; }
+/* всё помещается — переключатель не нужен */
+.tf-ps.is-static .tf-nav, .tf-sc.is-static .tf-nav { display: none; }
+.tf-ps .tf-nav + .show_all { margin-top: 24px; }
+.tf-sc .tf-nav { margin-top: 18px; }
+.tf-gal .tf-nav { padding: 0 15px; }
+@media (max-width: 40.063em) {
+	.tf-nav { margin-top: 16px; gap: 12px; }
+	.tf-nav .tf-nav__count { font-size: 18px; } .tf-nav .tf-nav__count b { font-size: 30px; }
+	.tf-nav .tf-nav__arrow { width: 46px; height: 46px; }
+	.tf-nav .tf-nav__arrow::before { width: 20px; height: 20px; }
+}
+/* главный слайдер: тот же вид в тёмной панели; на ПК в одну строку справа, на телефоне — номер и стрелки, точки ниже */
+.tf-hs__nav .tf-hs__count { color: rgba(255,255,255,.8); font-size: 18px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.tf-hs__nav .tf-hs__count b { margin-right: 3px; color: #f3c500; font-size: 28px; }
+.tf-hs__nav .tf-nav__arrow { width: 44px; height: 44px; box-shadow: none; }
+.tf-hs__nav .tf-nav__arrow::before { width: 20px; height: 20px; }
+.tf-hs__dots { align-items: center; gap: 8px; }
+.tf-hs__dots button, .tf-hs__dots button.is-on { flex: none; width: 12px; height: 20px; transition: width .3s; }
+.tf-hs__dots button.is-on { width: 36px; }
+.tf-hs__dots button i, .tf-hs__dots button.is-on i { top: 4px; height: 12px; border-radius: 6px; background: rgba(255,255,255,.35); }
+.tf-hs__dots button i::after { background: #f3c500; border-radius: 6px; }
+.tf-hs__dots button.is-done i::after { width: 0; }
+@media (max-width: 40.063em) {
+	.tf-hs__nav { display: grid; grid-template-columns: 1fr auto auto; gap: 12px 10px; }
+	.tf-hs__nav .tf-hs__count { grid-area: 1 / 1; text-align: left; }
+	.tf-hs__nav .tf-hs__arrow--prev { grid-area: 1 / 2; } .tf-hs__nav .tf-hs__arrow--next { grid-area: 1 / 3; }
+	.tf-hs__nav .tf-hs__dots { grid-area: 2 / 1 / 3 / 4; flex: none; justify-content: center; }
+	.tf-hs__dots button, .tf-hs__dots button.is-on { flex: none; width: 12px; } .tf-hs__dots button.is-on { width: 36px; }
+}

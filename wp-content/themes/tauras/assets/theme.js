@@ -176,32 +176,35 @@
 		});
 	})();
 
-	/* Ленты-слайдеры [data-tf-scroller] (педагоги, отзывы): лента листается пальцем, на ПК — стрелки по бокам,
-	   под лентой — точки (страница = ширина ленты) и «2 / 5»; стрелки и точки прячутся, если всё помещается */
+	/* Ленты-слайдеры [data-tf-scroller] (педагоги, отзывы): лента листается пальцем; под лентой переключатель .tf-nav —
+	   слева «2 / 5», справа стрелки, ниже точки (страница = ширина ленты); прячется, если всё помещается */
 	$$('[data-tf-scroller]').forEach(function (track) {
 		var box = document.createElement('div');
 		box.className = 'tf-sc';
 		track.parentNode.insertBefore(box, track);
 		box.appendChild(track);
 		track.classList.add('tf-sc__track');
-		var mk = function (cls, label, svg) { var b = document.createElement('button'); b.type = 'button'; b.className = cls; b.setAttribute('aria-label', label); b.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + svg + '"/></svg>'; box.appendChild(b); return b; };
-		var prev = mk('tf-sc__arr tf-sc__arr--prev', 'Назад', 'M15 5l-7 7 7 7'), next = mk('tf-sc__arr tf-sc__arr--next', 'Вперёд', 'M9 5l7 7-7 7');
-		var bar = document.createElement('div'); bar.className = 'tf-sc__bar'; box.appendChild(bar);
+		var nav = document.createElement('div');
+		nav.className = 'tf-nav tf-sc__nav' + (track.closest('.tf-tr__reviews') ? '' : ' tf-nav--light'); // отзывы — на тёмном фоне
+		nav.innerHTML = '<span class="tf-nav__count" aria-live="polite"></span><div class="tf-nav__arrows"></div><div class="tf-nav__dots"></div>';
+		box.appendChild(nav);
+		var arrows = $('.tf-nav__arrows', nav), bar = $('.tf-nav__dots', nav), cnt = $('.tf-nav__count', nav);
+		var mk = function (dir, label) { var b = document.createElement('button'); b.type = 'button'; b.className = 'tf-nav__arrow tf-nav__arrow--' + dir; b.setAttribute('aria-label', label); arrows.appendChild(b); return b; };
+		var prev = mk('prev', 'Назад'), next = mk('next', 'Вперёд');
 		var pages = 1, cur = 0;
 		var step = function () { var it = track.firstElementChild; if (!it) return track.clientWidth; var gap = parseFloat(getComputedStyle(track).columnGap) || 0; return Math.max(it.getBoundingClientRect().width + gap, Math.floor((track.clientWidth + gap) / (it.getBoundingClientRect().width + gap)) * (it.getBoundingClientRect().width + gap)); };
 		function build() {
 			pages = Math.max(1, Math.ceil((track.scrollWidth - 4) / track.clientWidth));
 			box.classList.toggle('is-static', pages < 2);
 			bar.innerHTML = '';
-			for (var i = 0; i < pages; i++) { var d = document.createElement('button'); d.type = 'button'; d.className = 'tf-sc__dot'; d.setAttribute('aria-label', 'Страница ' + (i + 1)); (function (n) { d.onclick = function () { track.scrollTo({ left: n * step(), behavior: 'smooth' }); }; })(i); bar.appendChild(d); }
-			var c = document.createElement('span'); c.className = 'tf-sc__count'; bar.appendChild(c);
+			for (var i = 0; i < pages; i++) { var d = document.createElement('button'); d.type = 'button'; d.setAttribute('aria-label', 'Страница ' + (i + 1)); (function (n) { d.onclick = function () { track.scrollTo({ left: n * step(), behavior: 'smooth' }); }; })(i); bar.appendChild(d); }
 			sync();
 		}
 		function sync() {
 			var max = track.scrollWidth - track.clientWidth;
 			cur = max <= 0 ? 0 : Math.min(pages - 1, Math.round(track.scrollLeft / max * (pages - 1)));
-			$$('.tf-sc__dot', bar).forEach(function (d, i) { d.classList.toggle('is-on', i === cur); });
-			var c = $('.tf-sc__count', bar); if (c) c.textContent = (cur + 1) + ' / ' + pages;
+			$$('button', bar).forEach(function (d, i) { d.classList.toggle('is-on', i === cur); });
+			cnt.innerHTML = '<b>' + (cur + 1) + '</b> / ' + pages;
 			prev.disabled = track.scrollLeft < 4; next.disabled = track.scrollLeft > max - 4;
 		}
 		prev.onclick = function () { track.scrollBy({ left: -step(), behavior: 'smooth' }); };
@@ -209,6 +212,11 @@
 		track.addEventListener('scroll', function () { window.requestAnimationFrame(sync); }, { passive: true });
 		window.addEventListener('resize', build);
 		build();
+	});
+	/* Фотогалереи [tauras_gallery template="slider"] (UIkit slider): номер текущего фото в «1 / N» под лентой */
+	$$('[data-tf-gal]').forEach(function (g) {
+		var items = $$('.uk-slider-items > li', g), b = $('.tf-nav__count b', g);
+		if (b) g.addEventListener('itemshow', function (e) { var i = items.indexOf(e.target); if (i > -1) b.textContent = i + 1; });
 	});
 	/* Точки на схемах (детский сад и др., UIkit uk-marker): вместо маленького окошка — сразу фото на весь экран */
 	document.addEventListener('click', function (e) {
